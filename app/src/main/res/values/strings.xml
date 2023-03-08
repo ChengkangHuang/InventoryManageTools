@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">OrderSystem</string>
+    <string name="status">Ready to Order</string>
+</resources>
