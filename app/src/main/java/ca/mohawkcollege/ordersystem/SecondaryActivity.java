@@ -14,12 +14,11 @@ import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -43,9 +42,10 @@ public class SecondaryActivity extends AppCompatActivity {
     FirebaseDatabase database;
     DatabaseReference myRef;
     GridView gridView;
-    resItemAdapter itemAdapter;
+    ItemAdapter itemAdapter;
     Drawable roundBackground;
     TextView statusTextView;
+    Button replayButton;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -62,18 +62,8 @@ public class SecondaryActivity extends AppCompatActivity {
         initData();
 
         gridView = findViewById(R.id.gridview);
-        itemAdapter = new resItemAdapter();
+        itemAdapter = new ItemAdapter(list);
         gridView.setAdapter(itemAdapter);
-
-        gridView.setOnItemClickListener((adapterView, view, i, l) -> {
-            ItemRequest item = (ItemRequest) list.get(i).get("item");
-            if (item != null) {
-                item.setEmpty(false);
-                myRef.child(item.getItemName()).setValue(item);
-            }
-            Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-            vibrator.vibrate(VibrationEffect.createOneShot(150, VibrationEffect.DEFAULT_AMPLITUDE));
-        });
 
         myRef = database.getReference("itemOrders");
         myRef.addValueEventListener(new ValueEventListener() {
@@ -84,9 +74,11 @@ public class SecondaryActivity extends AppCompatActivity {
                     if (item != null) {
                         View child = gridView.getChildAt(item.getItemId());
                         if (item.isEmpty()) {
-                            setStatus(child, "Order Received", Color.parseColor("#E82020"));
+                            setItemStatus(child, "Order Requested", Color.parseColor("#E82020"));
+                            setButtonStatus(child, item, true, Color.parseColor("#2196F3"));
                         } else {
-                            setStatus(child, "No Order Request", Color.parseColor("#4CAF50"));
+                            setItemStatus(child, "No Order Request", Color.parseColor("#4CAF50"));
+                            setButtonStatus(child, item, false, Color.parseColor("#807f7e"));
                         }
                     }
                 }
@@ -100,60 +92,34 @@ public class SecondaryActivity extends AppCompatActivity {
     }
 
     private void initData() {
-        for (int i = 0; i < imgRes.length; i++) {
+        for (int i = 0; i < imgName.length; i++) {
             Map<String, Object> map = new HashMap<>();
-            map.put("item", new ItemRequest(i, imgName[i], imgRes[i], false, 10));
+            map.put("item", new ItemRequest(i, imgName[i], imgRes[i]));
             list.add(map);
         }
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
-    public void setStatus(View gridChild, String text, int color) {
+    public void setItemStatus(View gridChild, String statusText, int color) {
         statusTextView = gridChild.findViewById(R.id.statusTextView);
-        statusTextView.setText(text);
+        statusTextView.setText(statusText);
         roundBackground = getDrawable(R.drawable.rounded_corners);
         roundBackground.setTint(color);
         statusTextView.setBackground(roundBackground);
     }
 
-    public class resItemAdapter extends BaseAdapter {
-
-        @Override
-        public int getCount() {
-            return list.size();
-        }
-
-        @Override
-        public Object getItem(int i) {
-            return list.get(i);
-        }
-
-        @Override
-        public long getItemId(int i) {
-            return i;
-        }
-
-        @Override
-        public View getView(int i, View view, ViewGroup viewGroup) {
-            resViewHolder holder;
-            if (view == null) {
-                view = View.inflate(viewGroup.getContext(), R.layout.item, null);
-                holder = new resViewHolder();
-                holder.itemImage = view.findViewById(R.id.itemImageView);
-                holder.itemName = view.findViewById(R.id.itemTextView);
-                view.setTag(holder);
-            } else {
-                holder = (resViewHolder) view.getTag();
-            }
-            holder.itemImage.setImageResource(imgRes[i]);
-            holder.itemName.setText(imgName[i]);
-            return view;
-        }
-
-        class resViewHolder {
-            ImageView itemImage;
-            TextView itemName;
-        }
+    public void setButtonStatus(View gridChild, ItemRequest item, boolean isEnable, int color) {
+        replayButton = gridChild.findViewById(R.id.actionButton);
+        replayButton.setEnabled(isEnable);
+        replayButton.getBackground().setTint(color);
+        replayButton.setText("Completed");
+        replayButton.setOnClickListener(v -> {
+            item.setEmpty(false);
+            myRef.child(item.getItemName()).setValue(item);
+            Toast.makeText(this, "Notification sent > " + item.getItemName(), Toast.LENGTH_SHORT).show();
+            Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            vibrator.vibrate(VibrationEffect.createOneShot(150, VibrationEffect.DEFAULT_AMPLITUDE));
+        });
     }
 
     public void logout(View view) {

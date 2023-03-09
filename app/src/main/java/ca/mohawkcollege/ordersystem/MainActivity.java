@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
@@ -16,9 +17,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -42,9 +45,10 @@ public class MainActivity extends AppCompatActivity {
     FirebaseDatabase database;
     DatabaseReference myRef;
     GridView gridView;
-    reqItemAdapter itemAdapter;
+    ItemAdapter itemAdapter;
     TextView statusTextView;
     Drawable roundBackground;
+    Button sendButton;
 
     @SuppressLint({"MissingInflatedId", "ResourceType"})
     @Override
@@ -61,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         initData();
 
         gridView = findViewById(R.id.gridview);
-        itemAdapter = new reqItemAdapter();
+        itemAdapter = new ItemAdapter(list);
         gridView.setAdapter(itemAdapter);
 
         gridView.setOnItemClickListener((adapterView, view, i, l) -> {
@@ -84,9 +88,11 @@ public class MainActivity extends AppCompatActivity {
                     if (item != null) {
                         View child = gridView.getChildAt(item.getItemId());
                         if (item.isEmpty()) {
-                            setStatus(child, "Ordered", Color.parseColor("#FFC107"));
+                            setItemStatus(child, "Ordered", Color.parseColor("#FFC107"));
+                            setButtonStatus(child, item, false, Color.parseColor("#807f7e"));
                         } else {
-                            setStatus(child, "Ready to Order", Color.parseColor("#03A9F4"));
+                            setItemStatus(child, "Ready to Order", Color.parseColor("#4CAF50"));
+                            setButtonStatus(child, item, true, Color.parseColor("#03A9F4"));
                         }
                     }
                 }
@@ -108,52 +114,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
-    public void setStatus(View gridChild, String text, int color) {
+    public void setItemStatus(View gridChild, String statusText, int color) {
         statusTextView = gridChild.findViewById(R.id.statusTextView);
-        statusTextView.setText(text);
+        statusTextView.setText(statusText);
         roundBackground = getDrawable(R.drawable.rounded_corners);
         roundBackground.setTint(color);
         statusTextView.setBackground(roundBackground);
     }
 
-    public class reqItemAdapter extends BaseAdapter {
-
-        @Override
-        public int getCount() {
-            return list.size();
-        }
-
-        @Override
-        public Object getItem(int i) {
-            return list.get(i);
-        }
-
-        @Override
-        public long getItemId(int i) {
-            return i;
-        }
-
-        @Override
-        public View getView(int i, View view, ViewGroup viewGroup) {
-            reqViewHolder holder;
-            if (view == null) {
-                view = View.inflate(viewGroup.getContext(), R.layout.item, null);
-                holder = new reqViewHolder();
-                holder.itemImage = view.findViewById(R.id.itemImageView);
-                holder.itemName = view.findViewById(R.id.itemTextView);
-                view.setTag(holder);
-            } else {
-                holder = (reqViewHolder) view.getTag();
-            }
-            holder.itemImage.setImageResource(imgRes[i]);
-            holder.itemName.setText(imgName[i]);
-            return view;
-        }
-
-        class reqViewHolder {
-            ImageView itemImage;
-            TextView itemName;
-        }
+    public void setButtonStatus(View gridChild, ItemRequest item, boolean isEnable, int color) {
+        sendButton = gridChild.findViewById(R.id.actionButton);
+        sendButton.setEnabled(isEnable);
+        sendButton.getBackground().setTint(color);
+        sendButton.setText("Order");
+        sendButton.setOnClickListener(v -> {
+            item.setEmpty(true);
+            myRef.child(item.getItemName()).setValue(item);
+            Toast.makeText(this, "Order sent > " + item.getItemName(), Toast.LENGTH_SHORT).show();
+            Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            vibrator.vibrate(VibrationEffect.createOneShot(150, VibrationEffect.DEFAULT_AMPLITUDE));
+        });
     }
 
     public void logout(View view) {

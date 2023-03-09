@@ -10,6 +10,12 @@ public class ItemRequest {
     public ItemRequest() {
     }
 
+    public ItemRequest(int itemId, String itemName, int itemImage) {
+        this.itemId = itemId;
+        this.itemName = itemName;
+        this.itemImage = itemImage;
+    }
+
     public ItemRequest(int itemId, String itemName, int itemImage, boolean isEmpty, int quantity) {
         this.itemId = itemId;
         this.itemName = itemName;

@@ -58,11 +58,9 @@ public class LoginActivity extends AppCompatActivity {
                         FirebaseUser user = mAuth.getCurrentUser();
                         Toast.makeText(this, user.getEmail() + " login successfully", Toast.LENGTH_SHORT).show();
                         Intent intent;
-                        if (user.getEmail().equals("aaaa@qq.com")) {
-                            intent = new Intent(this, MainActivity.class);
-                        } else {
-                            intent = new Intent(this, SecondaryActivity.class);
-                        }
+                        intent = new Intent(this,
+                                user.getEmail().equals("front@gmail.com") ?
+                                        MainActivity.class : SecondaryActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                     } else {
@@ -82,14 +80,9 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
         Log.d(TAG, "onStart: user is signed in");
-        if (mAuth.getCurrentUser().getEmail().equals("bbbb@qq.com")) {
-            Log.d(TAG, "onStart: user is BACK");
-            startActivity(new Intent(this, SecondaryActivity.class));
-            finish();
-        } else {
-            Log.d(TAG, "onStart: user is FRONT");
-            startActivity(new Intent(this, MainActivity.class));
-            finish();
-        }
+        startActivity(new Intent(this,
+                mAuth.getCurrentUser().getEmail().equals("front@gmail.com") ?
+                        MainActivity.class : SecondaryActivity.class));
+        finish();
     }
 }
