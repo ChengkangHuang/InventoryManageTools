@@ -14,6 +14,8 @@ public class ItemRequest {
         this.itemId = itemId;
         this.itemName = itemName;
         this.itemImage = itemImage;
+        this.isEmpty = false;
+        this.quantity = 0;
     }
 
     public ItemRequest(int itemId, String itemName, int itemImage, boolean isEmpty, int quantity) {

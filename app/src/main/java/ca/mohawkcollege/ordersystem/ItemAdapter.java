@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -47,6 +48,8 @@ public class ItemAdapter extends BaseAdapter {
             holder.itemImage = view.findViewById(R.id.itemImageView);
             holder.itemName = view.findViewById(R.id.itemTextView);
             holder.orderButton = view.findViewById(R.id.actionButton);
+            holder.minusImageButton = view.findViewById(R.id.minusImageButton);
+            holder.plusImageButton = view.findViewById(R.id.plusImageButton);
             view.setTag(holder);
         } else {
             holder = (ViewHolder) view.getTag();
@@ -54,7 +57,6 @@ public class ItemAdapter extends BaseAdapter {
         ItemRequest item = (ItemRequest) mapList.get(i).get("item");
         holder.itemImage.setImageResource(item.getItemImage());
         holder.itemName.setText(item.getItemName());
-        holder.orderButton.getBackground().setTint(Color.parseColor("#807f7e"));
         return view;
     }
 
@@ -62,5 +64,7 @@ public class ItemAdapter extends BaseAdapter {
         ImageView itemImage;
         TextView itemName;
         Button orderButton;
+        ImageButton minusImageButton;
+        ImageButton plusImageButton;
     }
 }

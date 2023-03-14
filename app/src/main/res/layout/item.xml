@@ -40,9 +40,10 @@
                 android:background="@drawable/rounded_corners"
                 android:backgroundTint="#E82020"
                 android:padding="5dp"
-                android:text="10"
+                android:text="0"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/itemImageView"
@@ -63,7 +64,10 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:background="@drawable/rounded_corners"
-                android:padding="10dp"
+                android:paddingStart="8dp"
+                android:paddingTop="4dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="4dp"
                 android:text="@string/status"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
@@ -81,13 +85,37 @@
                 android:layout_marginEnd="10dp"
                 android:backgroundTint="#807f7e"
                 android:enabled="false"
+                android:padding="10dp"
                 android:text="Button"
                 android:textColor="#FFFFFF"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 app:cornerRadius="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/statusTextView" />
+
+            <ImageButton
+                android:id="@+id/minusImageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#FFFFFF"
+                app:layout_constraintBottom_toBottomOf="@+id/statusTextView"
+                app:layout_constraintEnd_toStartOf="@+id/itemImageView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/minus_icon" />
+
+            <ImageButton
+                android:id="@+id/plusImageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#FFFFFF"
+                app:layout_constraintBottom_toBottomOf="@+id/statusTextView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/itemImageView"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/plus_icon" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -17,14 +17,17 @@
         <activity
             android:name=".SecondaryActivity"
             android:exported="false"
-            android:screenOrientation="landscape" >
+            android:screenOrientation="landscape"
+            android:configChanges="keyboardHidden|orientation|screenSize" >
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".LoginActivity"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="landscape"
+            android:configChanges="keyboardHidden|orientation|screenSize" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -37,7 +40,8 @@
         <activity
             android:name=".MainActivity"
             android:exported="false"
-            android:screenOrientation="landscape" >
+            android:screenOrientation="landscape"
+            android:configChanges="keyboardHidden|orientation|screenSize">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
